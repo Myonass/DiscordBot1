@@ -1,3 +1,6 @@
+import ca.tristan.jdacommands.JDACommands;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import commands.AudioCommands;
 import commands.BotCommands;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -5,14 +8,22 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
-public class App {
+
+public class App extends AudioEventAdapter {
 
     public static void main(String[] args) throws Exception{
-        JDA jda = JDABuilder.createDefault("OTc2NTczNzMwOTYyNjgxOTc2.Gf2WO8.2jg7mf5DH-DI9yiCT1-agemYaZQKTe1auEvBFA")
+
+        JDACommands jdaCommands = new JDACommands("!");
+        jdaCommands.registerCommand(new AudioCommands());
+
+        JDA jda = JDABuilder.createDefault("OTc2NTczNzMwOTYyNjgxOTc2.GeB84C.uJXSd_BswClFO9H5hdDziRVIzTR5jPCfgug5gM")
                 .setActivity(Activity.listening("Твою маму"))
                 .addEventListeners(new BotCommands())
-        .build().awaitReady();
+                .enableCache(CacheFlag.VOICE_STATE)
+                .addEventListeners(jdaCommands)
+                .build();
 
 
         Guild test1 = jda.getGuildById("500316970919395338");
@@ -30,7 +41,10 @@ public class App {
                             .setRequiredRange(1, Integer.MAX_VALUE)
             )
                     .queue();
+
         }
 
+
     }
+
 }
