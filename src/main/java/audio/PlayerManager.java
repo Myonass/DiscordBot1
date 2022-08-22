@@ -20,7 +20,7 @@ public class PlayerManager {
     private final Map<Long, GuildMusicManager> musicManager;
     private final AudioPlayerManager audioPlayerManager;
 
-    public PlayerManager(){
+    public PlayerManager() {
         this.musicManager = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
 
@@ -28,7 +28,7 @@ public class PlayerManager {
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
     }
 
-    public GuildMusicManager getMusicManager(Guild guild){
+    public GuildMusicManager getMusicManager(Guild guild) {
         return this.musicManager.computeIfAbsent(guild.getIdLong(), (guildId) -> {
             final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager);
             guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
@@ -36,31 +36,31 @@ public class PlayerManager {
         });
     }
 
-    public void loadAndPlay(TextChannel textChannel, String trackURL){
+    public void loadAndPlay(TextChannel textChannel, String trackURL) {
         final GuildMusicManager musicManager = this.getMusicManager(textChannel.getGuild());
 
         this.audioPlayerManager.loadItemOrdered(musicManager, trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack audioTrack) {
-               musicManager.scheduler.queue(audioTrack);
+                musicManager.scheduler.queue(audioTrack);
 
 
-               textChannel.sendMessage("Сейчас играет **`")
-                       .append(audioTrack.getInfo().title)
-                       .append("`** by **`")
-                       .append(audioTrack.getInfo().author)
-                       .append("`**")
-                       .queue();
+                textChannel.sendMessage("Сейчас играет **`")
+                        .append(audioTrack.getInfo().title)
+                        .append("`** by **`")
+                        .append(audioTrack.getInfo().author)
+                        .append("`**")
+                        .queue();
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist audioPlaylist) {
                 final List<AudioTrack> tracks = audioPlaylist.getTracks();
-                if (!tracks.isEmpty()){
+                if (!tracks.isEmpty()) {
                     musicManager.scheduler.queue(tracks.get(0));
-                    textChannel.sendMessage("Adding to queue **`")
+                    textChannel.sendMessage("Сейчас играет **`")
                             .append(tracks.get(0).getInfo().title)
-                            .append("`** by **`")
+                            .append("`** от **`")
                             .append(tracks.get(0).getInfo().author)
                             .append("`**")
                             .queue();
@@ -81,9 +81,9 @@ public class PlayerManager {
         });
     }
 
-    public static PlayerManager getINSTANCE(){
+    public static PlayerManager getINSTANCE() {
 
-        if(INSTANCE == null){
+        if (INSTANCE == null) {
             INSTANCE = new PlayerManager();
         }
         return INSTANCE;

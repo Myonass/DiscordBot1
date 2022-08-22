@@ -10,7 +10,7 @@ public class BotCommands extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
 
-        if(event.getName().equals("fart")){
+        if (event.getName().equals("fart")) {
 
             event.deferReply().queue();
 
@@ -19,7 +19,7 @@ public class BotCommands extends ListenerAdapter {
         } else if (event.getName().equals("food")) {
 
             OptionMapping option = event.getOption("name");
-            if (option == null){
+            if (option == null) {
                 event.reply("for some reason, a food name was not provided");
 
                 return;
@@ -34,7 +34,7 @@ public class BotCommands extends ListenerAdapter {
             OptionMapping operand1 = event.getOption("operator1");
             OptionMapping operand2 = event.getOption("operator2");
 
-            if(operand1 == null || operand2 == null){
+            if (operand1 == null || operand2 == null) {
 
                 event.reply("no numbers were provided").queue();
 

@@ -1,5 +1,6 @@
 package commands;
 
+import audio.GuildMusicManager;
 import audio.PlayerManager;
 import ca.tristan.jdacommands.ExecuteArgs;
 import ca.tristan.jdacommands.ICommand;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class AudioCommands implements ICommand {
+public class RepeatCommand implements ICommand {
     @Override
     public void execute(ExecuteArgs event) {
         if (!event.getMemberVoiceState().inAudioChannel()) {
@@ -30,9 +31,13 @@ public class AudioCommands implements ICommand {
             link = "ytsearch:" + link + " audio";
         }
 
-        PlayerManager.getINSTANCE().loadAndPlay(event.getTextChannel(), link);
-    }
+        final GuildMusicManager musicManager = PlayerManager.getINSTANCE().getMusicManager(event.getGuild());
+        final boolean newRepeating = !musicManager.scheduler.repeating;
 
+        musicManager.scheduler.repeating = newRepeating;
+
+        event.getTextChannel().sendMessageFormat("Трек поставлен на повтор").queue();
+    }
     public boolean isUrl(String url) {
         try {
             new URI(url);
@@ -42,14 +47,15 @@ public class AudioCommands implements ICommand {
         }
     }
 
+
     @Override
     public String getName() {
-        return "play";
+        return "repeat";
     }
 
     @Override
     public String helpMessage() {
-        return "Это команда для добавления музыки";
+        return "Повтор трека";
     }
 
     @Override

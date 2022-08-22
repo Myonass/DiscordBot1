@@ -1,5 +1,6 @@
 package commands;
 
+import audio.GuildMusicManager;
 import audio.PlayerManager;
 import ca.tristan.jdacommands.ExecuteArgs;
 import ca.tristan.jdacommands.ICommand;
@@ -9,7 +10,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class AudioCommands implements ICommand {
+public class StopCommands implements ICommand {
     @Override
     public void execute(ExecuteArgs event) {
         if (!event.getMemberVoiceState().inAudioChannel()) {
@@ -30,7 +31,12 @@ public class AudioCommands implements ICommand {
             link = "ytsearch:" + link + " audio";
         }
 
-        PlayerManager.getINSTANCE().loadAndPlay(event.getTextChannel(), link);
+        final GuildMusicManager musicManager = PlayerManager.getINSTANCE().getMusicManager(event.getGuild());
+
+        musicManager.scheduler.audioPlayer.stopTrack();
+        musicManager.scheduler.queue.clear();
+
+        event.getTextChannel().sendMessage("Проигрывание мазиков приостановлено").queue();
     }
 
     public boolean isUrl(String url) {
@@ -44,12 +50,12 @@ public class AudioCommands implements ICommand {
 
     @Override
     public String getName() {
-        return "play";
+        return "stop";
     }
 
     @Override
     public String helpMessage() {
-        return "Это команда для добавления музыки";
+        return "Это команда для остановки музыки";
     }
 
     @Override
